@@ -5,22 +5,48 @@
  */
 package Guiao3.ex1;
 
-import Guiao2.ex4.*;
-
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
  * @author ruifreitas
  */
 public class Conta {
+	
+	private ReentrantLock lock;
+	private int num;
     private int saldo;
     
-    public Conta(){
+    public Conta(int num){
+    	this.lock = new ReentrantLock();
+    	this.num=num;
         saldo=0;
     }
     
-    public synchronized int consulta(){return saldo;}
-    public synchronized void credito(int val){this.saldo+=val;}
-    public synchronized void debito(int val){this.saldo-=val;}
+    public int getNum(){
+    	return this.num;
+    }
+    
+    public ReentrantLock getLock(){
+    	return lock;
+    }
+    
+    public int consulta(){
+    	int val;
+    	lock.lock();
+    	val=saldo;
+    	lock.unlock();
+    	return val;
+    }
+    public synchronized void credito(int val){
+    	lock.lock();
+    	this.saldo+=val;
+    	lock.unlock();
+    }
+    public synchronized void debito(int val){
+    	lock.lock();
+    	this.saldo-=val;
+    	lock.unlock();
+    }
     
 }
